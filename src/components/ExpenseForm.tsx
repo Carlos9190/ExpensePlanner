@@ -1,19 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Pressable, SafeAreaView, StyleSheet, Text, TextInput, View } from 'react-native'
 import { Picker } from '@react-native-picker/picker'
 import { globalStyles } from '../styles'
+import { Expense } from '../types'
 
 type ExpenseFormProps = {
     setModal: React.Dispatch<React.SetStateAction<boolean>>
+    handleExpense: (expense: Expense) => void
 }
 
-export default function ExpenseForm({ setModal }: ExpenseFormProps) {
+export default function ExpenseForm({ setModal, handleExpense }: ExpenseFormProps) {
+
+    const [name, setName] = useState('')
+    const [quantity, setQuantity] = useState('')
+    const [category, setCategory] = useState('')
+    const id = ''
+
     return (
         <SafeAreaView style={styles.container}>
             <View>
                 <Pressable
                     style={styles.btnCancel}
-                    // onLongPress={() => setModal(false)}
+                    onLongPress={() => setModal(false)}
                 >
                     <Text style={styles.btnCancelText}>Cancel</Text>
                 </Pressable>
@@ -27,6 +35,8 @@ export default function ExpenseForm({ setModal }: ExpenseFormProps) {
                     <TextInput
                         style={styles.input}
                         placeholder='Expense name: e.g. Food'
+                        value={name}
+                        onChangeText={setName}
                     />
                 </View>
 
@@ -36,12 +46,19 @@ export default function ExpenseForm({ setModal }: ExpenseFormProps) {
                         style={styles.input}
                         placeholder='Expense quantity: e.g. 300'
                         keyboardType='numeric'
+                        value={quantity}
+                        onChangeText={setQuantity}
                     />
                 </View>
 
                 <View style={styles.field}>
                     <Text style={styles.label}>Expense category</Text>
-                    <Picker>
+                    <Picker
+                        selectedValue={category}
+                        onValueChange={itemValue => {
+                            setCategory(itemValue)
+                        }}
+                    >
                         <Picker.Item label='-- Select --' value='' />
                         <Picker.Item label='Saving' value='saving' />
                         <Picker.Item label='Food' value='food' />
@@ -54,6 +71,7 @@ export default function ExpenseForm({ setModal }: ExpenseFormProps) {
 
                 <Pressable
                     style={styles.submitBtn}
+                    onPress={() => handleExpense({ id, name, quantity, category })}
                 >
                     <Text style={styles.submitBtnText}>Add expense</Text>
                 </Pressable>

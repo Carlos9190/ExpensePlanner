@@ -2,13 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { Image, StyleSheet, Text, View } from 'react-native'
 import { globalStyles } from '../styles'
 import { formatQuantity } from '../utils'
+import { Expense } from '../types'
 
 type ControlBudgetProps = {
     budget: string
-    expenses: {
-        id: number
-        quantity: string
-    }[]
+    expenses: Expense[]
 }
 
 export default function ControlBudget({ budget, expenses }: ControlBudgetProps) {

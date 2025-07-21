@@ -4,20 +4,38 @@ import Header from './src/components/Header'
 import NewBudget from './src/components/NewBudget'
 import ControlBudget from './src/components/ControlBudget'
 import ExpenseForm from './src/components/ExpenseForm'
+import { Expense } from './src/types'
+import { generateId } from './src/utils'
 
 export default function App() {
 
   const [isValidBudget, setIsValidBudget] = useState(false)
   const [budget, setBudget] = useState('')
-  const [expenses, setExpenses] = useState([])
+  const [expenses, setExpenses] = useState<Expense[]>([])
   const [modal, setModal] = useState(false)
 
   const handleNewBudget = (budget: string) => {
-    if (Number(budget) > 0) {
+    if (Number(budget) >= 0) {
       setIsValidBudget(true)
     } else {
       Alert.alert('Error', 'Budget must be greater than 0')
     }
+  }
+
+  const handleExpense = (expense: Expense) => {
+    const { name, quantity, category } = expense
+
+    if (Number(quantity) <= 0) {
+      Alert.alert('Error', 'Quantity must be greater than 0')
+    } else if ([name, quantity, category].includes('')) {
+      Alert.alert('Error', 'All fields are required')
+      return
+    }
+
+    // Set the new expense and close modal
+    expense.id = generateId()
+    setExpenses([...expenses, expense])
+    setModal(!modal)
   }
 
   return (
@@ -46,6 +64,7 @@ export default function App() {
         >
           <ExpenseForm
             setModal={setModal}
+            handleExpense={handleExpense}
           />
         </Modal>
       )}
