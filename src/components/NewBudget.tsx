@@ -1,15 +1,14 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 import { globalStyles } from '../styles'
 
 type NewBudgetProps = {
+    budget: string
+    setBudget: React.Dispatch<React.SetStateAction<string>>
     handleNewBudget: (budget: string) => void
 }
 
-export default function NewBudget({ handleNewBudget }: NewBudgetProps) {
-
-    const [budget, setBudget] = useState('')
-
+export default function NewBudget({ budget, setBudget, handleNewBudget }: NewBudgetProps) {
     return (
         <View style={styles.container}>
             <Text style={styles.label}>Define budget</Text>

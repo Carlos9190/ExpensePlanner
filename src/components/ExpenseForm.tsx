@@ -1,0 +1,117 @@
+import React from 'react'
+import { Pressable, SafeAreaView, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Picker } from '@react-native-picker/picker'
+import { globalStyles } from '../styles'
+
+type ExpenseFormProps = {
+    setModal: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+export default function ExpenseForm({ setModal }: ExpenseFormProps) {
+    return (
+        <SafeAreaView style={styles.container}>
+            <View>
+                <Pressable
+                    style={styles.btnCancel}
+                    // onLongPress={() => setModal(false)}
+                >
+                    <Text style={styles.btnCancelText}>Cancel</Text>
+                </Pressable>
+            </View>
+
+            <View style={styles.form}>
+                <Text style={styles.title}>New expense</Text>
+
+                <View style={styles.field}>
+                    <Text style={styles.label}>Expense name</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder='Expense name: e.g. Food'
+                    />
+                </View>
+
+                <View style={styles.field}>
+                    <Text style={styles.label}>Expense quantity</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder='Expense quantity: e.g. 300'
+                        keyboardType='numeric'
+                    />
+                </View>
+
+                <View style={styles.field}>
+                    <Text style={styles.label}>Expense category</Text>
+                    <Picker>
+                        <Picker.Item label='-- Select --' value='' />
+                        <Picker.Item label='Saving' value='saving' />
+                        <Picker.Item label='Food' value='food' />
+                        <Picker.Item label='House' value='house' />
+                        <Picker.Item label='Health' value='health' />
+                        <Picker.Item label='Leisure' value='leisure' />
+                        <Picker.Item label='Subscriptions' value='subscriptions' />
+                    </Picker>
+                </View>
+
+                <Pressable
+                    style={styles.submitBtn}
+                >
+                    <Text style={styles.submitBtnText}>Add expense</Text>
+                </Pressable>
+            </View>
+        </SafeAreaView>
+    )
+}
+
+const styles = StyleSheet.create({
+    container: {
+        backgroundColor: '#1E40AF',
+        flex: 1
+    },
+    btnCancel: {
+        backgroundColor: '#DB2777',
+        padding: 10,
+        marginTop: 30,
+        marginHorizontal: 10
+    },
+    btnCancelText: {
+        textAlign: 'center',
+        textTransform: 'uppercase',
+        fontWeight: 'bold',
+        color: '#FFF'
+    },
+    form: {
+        ...globalStyles.container
+    },
+    title: {
+        textAlign: 'center',
+        fontSize: 28,
+        marginBottom: 30,
+        color: "#64748B"
+    },
+    field: {
+        marginVertical: 10
+    },
+    label: {
+        color: "#64748B",
+        textTransform: 'uppercase',
+        fontSize: 16,
+        fontWeight: 'bold'
+    },
+    input: {
+        backgroundColor: '#F5F5F5',
+        padding: 10,
+        borderRadius: 10,
+        marginTop: 10
+    },
+    submitBtn: {
+        backgroundColor: '#3B82F6',
+        padding: 10,
+        marginTop: 20
+    },
+    submitBtnText: {
+        textAlign: 'center',
+        color: '#FFF',
+        fontWeight: 'bold',
+        textTransform: 'uppercase'
+    }
+})

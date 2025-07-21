@@ -1,12 +1,16 @@
 import React, { useState } from 'react'
-import { Alert, StyleSheet, View } from 'react-native'
+import { Alert, Image, Modal, Pressable, StyleSheet, View } from 'react-native'
 import Header from './src/components/Header'
 import NewBudget from './src/components/NewBudget'
 import ControlBudget from './src/components/ControlBudget'
+import ExpenseForm from './src/components/ExpenseForm'
 
 export default function App() {
 
   const [isValidBudget, setIsValidBudget] = useState(false)
+  const [budget, setBudget] = useState('')
+  const [expenses, setExpenses] = useState([])
+  const [modal, setModal] = useState(false)
 
   const handleNewBudget = (budget: string) => {
     if (Number(budget) > 0) {
@@ -22,14 +26,40 @@ export default function App() {
         <Header />
 
         {isValidBudget ? (
-          <ControlBudget />
+          <ControlBudget
+            budget={budget}
+            expenses={expenses}
+          />
         ) : (
           <NewBudget
+            budget={budget}
+            setBudget={setBudget}
             handleNewBudget={handleNewBudget}
           />
         )}
-
       </View>
+
+      {modal && (
+        <Modal
+          animationType='slide'
+          visible={modal}
+        >
+          <ExpenseForm
+            setModal={setModal}
+          />
+        </Modal>
+      )}
+
+      {isValidBudget && (
+        <Pressable
+          onPress={() => setModal(!modal)}
+        >
+          <Image
+            style={styles.image}
+            source={require('./src/img/nuevo-gasto.png')}
+          />
+        </Pressable>
+      )}
     </View>
   )
 }
@@ -42,5 +72,12 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#F5F5F5',
     flex: 1
+  },
+  image: {
+    width: 60,
+    height: 60,
+    position: 'absolute',
+    top: 65,
+    right: 20
   }
 })
