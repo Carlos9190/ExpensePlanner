@@ -21,14 +21,14 @@ export default function ControlBudget({ budget, expenses }: ControlBudgetProps) 
 
         setSpent(totalSpent.toString())
         setBalance(totalBalance.toString())
-    }, [])
+    }, [expenses])
 
     return (
         <View style={styles.container}>
             <View style={styles.centerGraph}>
                 <Image
                     style={styles.image}
-                    source={require('../img/grafico.jpg')}
+                    source={require('../img/figure.jpg')}
                 />
             </View>
 

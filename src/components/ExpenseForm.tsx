@@ -6,22 +6,28 @@ import { Expense } from '../types'
 
 type ExpenseFormProps = {
     setModal: React.Dispatch<React.SetStateAction<boolean>>
+    setExpense: React.Dispatch<React.SetStateAction<Expense>>
+    initialExpense: Expense
     handleExpense: (expense: Expense) => void
 }
 
-export default function ExpenseForm({ setModal, handleExpense }: ExpenseFormProps) {
+export default function ExpenseForm({ setModal, setExpense, initialExpense, handleExpense }: ExpenseFormProps) {
 
     const [name, setName] = useState('')
     const [quantity, setQuantity] = useState('')
     const [category, setCategory] = useState('')
     const id = ''
+    const date = new Date()
 
     return (
         <SafeAreaView style={styles.container}>
             <View>
                 <Pressable
                     style={styles.btnCancel}
-                    onLongPress={() => setModal(false)}
+                    onLongPress={() => {
+                        setModal(false)
+                        setExpense(initialExpense)
+                    }}
                 >
                     <Text style={styles.btnCancelText}>Cancel</Text>
                 </Pressable>
@@ -61,17 +67,18 @@ export default function ExpenseForm({ setModal, handleExpense }: ExpenseFormProp
                     >
                         <Picker.Item label='-- Select --' value='' />
                         <Picker.Item label='Saving' value='saving' />
-                        <Picker.Item label='Food' value='food' />
                         <Picker.Item label='House' value='house' />
-                        <Picker.Item label='Health' value='health' />
+                        <Picker.Item label='Food' value='food' />
+                        <Picker.Item label='Other expenses' value='expenses' />
                         <Picker.Item label='Leisure' value='leisure' />
+                        <Picker.Item label='Health' value='health' />
                         <Picker.Item label='Subscriptions' value='subscriptions' />
                     </Picker>
                 </View>
 
                 <Pressable
                     style={styles.submitBtn}
-                    onPress={() => handleExpense({ id, name, quantity, category })}
+                    onPress={() => handleExpense({ id, name, quantity, category, date })}
                 >
                     <Text style={styles.submitBtnText}>Add expense</Text>
                 </Pressable>

@@ -1,11 +1,20 @@
 import React, { useState } from 'react'
-import { Alert, Image, Modal, Pressable, StyleSheet, View } from 'react-native'
+import { Alert, Image, Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native'
 import Header from './src/components/Header'
 import NewBudget from './src/components/NewBudget'
 import ControlBudget from './src/components/ControlBudget'
 import ExpenseForm from './src/components/ExpenseForm'
 import { Expense } from './src/types'
 import { generateId } from './src/utils'
+import ExpenseList from './src/components/ExpenseList'
+
+const initialExpense: Expense = {
+  id: '',
+  name: '',
+  quantity: '',
+  category: '',
+  date: new Date()
+}
 
 export default function App() {
 
@@ -13,6 +22,7 @@ export default function App() {
   const [budget, setBudget] = useState('')
   const [expenses, setExpenses] = useState<Expense[]>([])
   const [modal, setModal] = useState(false)
+  const [expense, setExpense] = useState<Expense>(initialExpense)
 
   const handleNewBudget = (budget: string) => {
     if (Number(budget) >= 0) {
@@ -26,10 +36,9 @@ export default function App() {
     const { name, quantity, category } = expense
 
     if (Number(quantity) <= 0) {
-      Alert.alert('Error', 'Quantity must be greater than 0')
+      return Alert.alert('Error', 'Quantity must be greater than 0')
     } else if ([name, quantity, category].includes('')) {
-      Alert.alert('Error', 'All fields are required')
-      return
+      return Alert.alert('Error', 'All fields are required')
     }
 
     // Set the new expense and close modal
@@ -40,22 +49,32 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Header />
+      <ScrollView>
+        <View style={styles.header}>
+          <Header />
 
-        {isValidBudget ? (
-          <ControlBudget
-            budget={budget}
+          {isValidBudget ? (
+            <ControlBudget
+              budget={budget}
+              expenses={expenses}
+            />
+          ) : (
+            <NewBudget
+              budget={budget}
+              setBudget={setBudget}
+              handleNewBudget={handleNewBudget}
+            />
+          )}
+        </View>
+
+        {isValidBudget && (
+          <ExpenseList
             expenses={expenses}
-          />
-        ) : (
-          <NewBudget
-            budget={budget}
-            setBudget={setBudget}
-            handleNewBudget={handleNewBudget}
+            setModal={setModal}
+            setExpense={setExpense}
           />
         )}
-      </View>
+      </ScrollView>
 
       {modal && (
         <Modal
@@ -64,6 +83,8 @@ export default function App() {
         >
           <ExpenseForm
             setModal={setModal}
+            setExpense={setExpense}
+            initialExpense={initialExpense}
             handleExpense={handleExpense}
           />
         </Modal>
@@ -75,7 +96,7 @@ export default function App() {
         >
           <Image
             style={styles.image}
-            source={require('./src/img/nuevo-gasto.png')}
+            source={require('./src/img/new-expense.png')}
           />
         </Pressable>
       )}
@@ -96,7 +117,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     position: 'absolute',
-    top: 65,
+    bottom: 10,
     right: 20
   }
 })
