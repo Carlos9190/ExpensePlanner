@@ -1,13 +1,14 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Alert, Image, Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import Header from './src/components/Header'
 import NewBudget from './src/components/NewBudget'
 import ControlBudget from './src/components/ControlBudget'
 import ExpenseForm from './src/components/ExpenseForm'
-import { Expense } from './src/types'
-import { generateId } from './src/utils'
 import ExpenseList from './src/components/ExpenseList'
 import ExpenseFilter from './src/components/ExpenseFilter'
+import { Expense } from './src/types'
+import { generateId } from './src/utils'
 
 const initialExpense: Expense = {
   id: '',
@@ -26,6 +27,37 @@ export default function App() {
   const [expense, setExpense] = useState<Expense>(initialExpense)
   const [filter, setFilter] = useState('')
   const [filteredExpenses, setFilteredExpenses] = useState<Expense[]>([])
+
+  useEffect(() => {
+    const getBudgetStorage = async () => {
+      try {
+        const budgetStorage = await AsyncStorage.getItem('expense_planner') ?? ''
+
+        if (Number(budgetStorage) > 0) {
+          setBudget(budgetStorage)
+          setIsValidBudget(true)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    getBudgetStorage()
+  }, [])
+
+  useEffect(() => {
+    if (isValidBudget) {
+      const setBudgetStorage = async () => {
+        try {
+          await AsyncStorage.setItem('expense_planner', budget)
+        } catch (error) {
+          console.log(error)
+        }
+      }
+
+      setBudgetStorage()
+    }
+  }, [isValidBudget])
 
   const handleNewBudget = (budget: string) => {
     if (Number(budget) >= 0) {
