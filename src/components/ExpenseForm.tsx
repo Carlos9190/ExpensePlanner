@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Pressable, SafeAreaView, StyleSheet, Text, TextInput, View } from 'react-native'
-import { Picker } from '@react-native-picker/picker'
 import { globalStyles } from '../styles'
 import { Expense } from '../types'
+import ExpensePicker from './ExpensePicker'
 
 type ExpenseFormProps = {
     setModal: React.Dispatch<React.SetStateAction<boolean>>
@@ -49,7 +49,7 @@ export default function ExpenseForm({ setModal, expense, setExpense, initialExpe
                         style={[styles.btn, styles.btnEdit]}
                         onLongPress={() => handleDeleteExpense(id)}
                     >
-                        <Text style={styles.btnText}>Eliminar</Text>
+                        <Text style={styles.btnText}>Delete</Text>
                     </Pressable>
                 )}
             </View>
@@ -80,21 +80,10 @@ export default function ExpenseForm({ setModal, expense, setExpense, initialExpe
 
                 <View style={styles.field}>
                     <Text style={styles.label}>Expense category</Text>
-                    <Picker
-                        selectedValue={category}
-                        onValueChange={itemValue => {
-                            setCategory(itemValue)
-                        }}
-                    >
-                        <Picker.Item label='-- Select --' value='' />
-                        <Picker.Item label='Saving' value='saving' />
-                        <Picker.Item label='House' value='house' />
-                        <Picker.Item label='Food' value='food' />
-                        <Picker.Item label='Other expenses' value='expenses' />
-                        <Picker.Item label='Leisure' value='leisure' />
-                        <Picker.Item label='Health' value='health' />
-                        <Picker.Item label='Subscriptions' value='subscriptions' />
-                    </Picker>
+                    <ExpensePicker
+                        category={category}
+                        setCategory={setCategory}
+                    />
                 </View>
 
                 <Pressable

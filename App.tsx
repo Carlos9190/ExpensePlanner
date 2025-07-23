@@ -7,6 +7,7 @@ import ExpenseForm from './src/components/ExpenseForm'
 import { Expense } from './src/types'
 import { generateId } from './src/utils'
 import ExpenseList from './src/components/ExpenseList'
+import ExpenseFilter from './src/components/ExpenseFilter'
 
 const initialExpense: Expense = {
   id: '',
@@ -23,6 +24,8 @@ export default function App() {
   const [expenses, setExpenses] = useState<Expense[]>([])
   const [modal, setModal] = useState(false)
   const [expense, setExpense] = useState<Expense>(initialExpense)
+  const [filter, setFilter] = useState('')
+  const [filteredExpenses, setFilteredExpenses] = useState<Expense[]>([])
 
   const handleNewBudget = (budget: string) => {
     if (Number(budget) >= 0) {
@@ -93,11 +96,22 @@ export default function App() {
         </View>
 
         {isValidBudget && (
-          <ExpenseList
-            expenses={expenses}
-            setModal={setModal}
-            setExpense={setExpense}
-          />
+          <>
+            <ExpenseFilter
+              filter={filter}
+              setFilter={setFilter}
+              expenses={expenses}
+              setFilteredExpenses={setFilteredExpenses}
+            />
+
+            <ExpenseList
+              expenses={expenses}
+              setModal={setModal}
+              setExpense={setExpense}
+              filter={filter}
+              filteredExpenses={filteredExpenses}
+            />
+          </>
         )}
       </ScrollView>
 
