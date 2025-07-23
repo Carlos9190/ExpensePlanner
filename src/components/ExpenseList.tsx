@@ -7,14 +7,23 @@ type ExpenseListProps = {
     expenses: Expense[]
     setModal: React.Dispatch<React.SetStateAction<boolean>>
     setExpense: React.Dispatch<React.SetStateAction<Expense>>
+    filter: string
+    filteredExpenses: Expense[]
 }
 
-export default function ExpenseList({ expenses, setModal, setExpense }: ExpenseListProps) {
+export default function ExpenseList({ expenses, setModal, setExpense, filter, filteredExpenses }: ExpenseListProps) {
     if (expenses) return (
         <View style={styles.container}>
             <Text style={styles.title}>Gastos</Text>
 
-            {expenses.length ?
+            {filter ? filteredExpenses.map(expense => (
+                <ExpenseCard
+                    key={expense.id}
+                    expense={expense}
+                    setModal={setModal}
+                    setExpense={setExpense}
+                />
+            )) :
                 expenses.map(expense => (
                     <ExpenseCard
                         key={expense.id}
@@ -22,16 +31,19 @@ export default function ExpenseList({ expenses, setModal, setExpense }: ExpenseL
                         setModal={setModal}
                         setExpense={setExpense}
                     />
-                )) :
-                <Text style={styles.noExpenses}>No expenses yet</Text>
+                ))
             }
+
+            {!expenses.length || (!filteredExpenses.length && filter) && (
+                <Text style={styles.noExpenses}>No expenses yet</Text>
+            )}
         </View>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: 70,
+        marginTop: 30,
         marginBottom: 120
     },
     title: {
