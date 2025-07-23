@@ -33,7 +33,7 @@ export default function App() {
   }
 
   const handleExpense = (expense: Expense) => {
-    const { name, quantity, category } = expense
+    const { id, name, quantity, category } = expense
 
     if (Number(quantity) <= 0) {
       return Alert.alert('Error', 'Quantity must be greater than 0')
@@ -41,10 +41,35 @@ export default function App() {
       return Alert.alert('Error', 'All fields are required')
     }
 
-    // Set the new expense and close modal
-    expense.id = generateId()
-    setExpenses([...expenses, expense])
+    if (id) {
+      // Set the updated expense
+      const updatedExpense = expenses.map(expenseState => expenseState.id === id ? expense : expenseState)
+      setExpenses(updatedExpense)
+    } else {
+      // Set the new expense
+      expense.id = generateId()
+      setExpenses([...expenses, expense])
+    }
+
     setModal(!modal)
+  }
+
+  const handleDeleteExpense = (id: Expense['id']) => {
+    Alert.alert(
+      'Are you sure you want to delete this expense?',
+      'This action is irreversible and the patient will be permanently removed.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete', onPress: () => {
+            const updatedExpenses = expenses.filter(expenseState => expenseState.id !== id)
+            setExpenses(updatedExpenses)
+            setExpense(initialExpense)
+            setModal(!modal)
+          }
+        }
+      ]
+    )
   }
 
   return (
@@ -83,15 +108,18 @@ export default function App() {
         >
           <ExpenseForm
             setModal={setModal}
+            expense={expense}
             setExpense={setExpense}
             initialExpense={initialExpense}
             handleExpense={handleExpense}
+            handleDeleteExpense={handleDeleteExpense}
           />
         </Modal>
       )}
 
       {isValidBudget && (
         <Pressable
+          style={styles.pressable}
           onPress={() => setModal(!modal)}
         >
           <Image
@@ -113,11 +141,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F5F5',
     flex: 1
   },
-  image: {
+  pressable: {
     width: 60,
     height: 60,
     position: 'absolute',
     bottom: 10,
     right: 20
+  },
+  image: {
+    width: 60,
+    height: 60
   }
 })

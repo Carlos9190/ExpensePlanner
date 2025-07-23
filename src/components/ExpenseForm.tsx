@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Pressable, SafeAreaView, StyleSheet, Text, TextInput, View } from 'react-native'
 import { Picker } from '@react-native-picker/picker'
 import { globalStyles } from '../styles'
@@ -6,35 +6,56 @@ import { Expense } from '../types'
 
 type ExpenseFormProps = {
     setModal: React.Dispatch<React.SetStateAction<boolean>>
+    expense: Expense
     setExpense: React.Dispatch<React.SetStateAction<Expense>>
     initialExpense: Expense
     handleExpense: (expense: Expense) => void
+    handleDeleteExpense: (id: Expense["id"]) => void
 }
 
-export default function ExpenseForm({ setModal, setExpense, initialExpense, handleExpense }: ExpenseFormProps) {
+export default function ExpenseForm({ setModal, expense, setExpense, initialExpense, handleExpense, handleDeleteExpense }: ExpenseFormProps) {
 
+    const [id, setId] = useState('')
     const [name, setName] = useState('')
     const [quantity, setQuantity] = useState('')
     const [category, setCategory] = useState('')
-    const id = ''
-    const date = new Date()
+    const [date, setDate] = useState(new Date())
+
+    useEffect(() => {
+        if (expense?.name) {
+            setId(expense.id)
+            setName(expense.name)
+            setQuantity(expense.quantity)
+            setCategory(expense.category)
+            setDate(expense.date)
+        }
+    }, [expense])
 
     return (
         <SafeAreaView style={styles.container}>
-            <View>
+            <View style={styles.btnContainer}>
                 <Pressable
-                    style={styles.btnCancel}
+                    style={[styles.btn, styles.btnCancel]}
                     onLongPress={() => {
                         setModal(false)
                         setExpense(initialExpense)
                     }}
                 >
-                    <Text style={styles.btnCancelText}>Cancel</Text>
+                    <Text style={styles.btnText}>Cancel</Text>
                 </Pressable>
+
+                {expense.id && (
+                    <Pressable
+                        style={[styles.btn, styles.btnEdit]}
+                        onLongPress={() => handleDeleteExpense(id)}
+                    >
+                        <Text style={styles.btnText}>Eliminar</Text>
+                    </Pressable>
+                )}
             </View>
 
             <View style={styles.form}>
-                <Text style={styles.title}>New expense</Text>
+                <Text style={styles.title}>{expense?.name ? 'Edit' : 'New'} expense</Text>
 
                 <View style={styles.field}>
                     <Text style={styles.label}>Expense name</Text>
@@ -80,7 +101,7 @@ export default function ExpenseForm({ setModal, setExpense, initialExpense, hand
                     style={styles.submitBtn}
                     onPress={() => handleExpense({ id, name, quantity, category, date })}
                 >
-                    <Text style={styles.submitBtnText}>Add expense</Text>
+                    <Text style={styles.submitBtnText}>{expense?.name ? 'Save changes' : 'Add expense'}</Text>
                 </Pressable>
             </View>
         </SafeAreaView>
@@ -92,13 +113,23 @@ const styles = StyleSheet.create({
         backgroundColor: '#1E40AF',
         flex: 1
     },
-    btnCancel: {
-        backgroundColor: '#DB2777',
+    btnContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    },
+    btn: {
         padding: 10,
         marginTop: 30,
-        marginHorizontal: 10
+        marginHorizontal: 10,
+        flex: 1
     },
-    btnCancelText: {
+    btnCancel: {
+        backgroundColor: '#DB2777'
+    },
+    btnEdit: {
+        backgroundColor: 'red'
+    },
+    btnText: {
         textAlign: 'center',
         textTransform: 'uppercase',
         fontWeight: 'bold',
