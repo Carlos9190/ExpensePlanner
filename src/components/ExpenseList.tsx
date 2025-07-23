@@ -34,7 +34,7 @@ export default function ExpenseList({ expenses, setModal, setExpense, filter, fi
                 ))
             }
 
-            {!expenses.length || (!filteredExpenses.length && filter) && (
+            {(!expenses.length || (!filteredExpenses.length && filter)) && (
                 <Text style={styles.noExpenses}>No expenses yet</Text>
             )}
         </View>

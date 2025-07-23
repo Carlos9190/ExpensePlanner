@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { globalStyles } from '../styles'
 import { formatQuantity } from '../utils'
 import { Expense } from '../types'
@@ -8,9 +8,10 @@ import CircularProgress from 'react-native-circular-progress-indicator'
 type ControlBudgetProps = {
     budget: string
     expenses: Expense[]
+    restartApp: () => void
 }
 
-export default function ControlBudget({ budget, expenses }: ControlBudgetProps) {
+export default function ControlBudget({ budget, expenses, restartApp }: ControlBudgetProps) {
 
     const [balance, setBalance] = useState('0')
     const [spent, setSpent] = useState('0')
@@ -50,6 +51,13 @@ export default function ControlBudget({ budget, expenses }: ControlBudgetProps) 
             </View>
 
             <View style={styles.containerText}>
+                <Pressable
+                    style={styles.btnRestart}
+                    onLongPress={restartApp}
+                >
+                    <Text style={styles.btnRestartText}>Restart app</Text>
+                </Pressable>
+
                 <Text style={styles.value}>
                     <Text style={styles.label}>Budget: {''}</Text>
                     {formatQuantity(budget)}
@@ -76,9 +84,17 @@ const styles = StyleSheet.create({
     centerGraph: {
         alignItems: 'center'
     },
-    image: {
-        width: 250,
-        height: 250
+    btnRestart: {
+        backgroundColor: '#DB2777',
+        padding: 10,
+        marginBottom: 40,
+        borderRadius: 5
+    },
+    btnRestartText: {
+        textAlign: 'center',
+        color: '#FFF',
+        fontWeight: 'bold',
+        textTransform: 'uppercase'
     },
     containerText: {
         marginTop: 50

@@ -59,6 +59,36 @@ export default function App() {
     }
   }, [isValidBudget])
 
+  useEffect(() => {
+    const getExpensesStorage = async () => {
+      try {
+        const expensesStorage = await AsyncStorage.getItem('expenses') ?? JSON.stringify([])
+        const parsedExpenses: Expense[] = JSON.parse(expensesStorage).map((expense: Expense) => ({
+          ...expense,
+          date: new Date(expense.date)
+        }))
+
+        setExpenses(parsedExpenses)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    getExpensesStorage()
+  }, [])
+
+  useEffect(() => {
+    const setExpensesStorage = async () => {
+      try {
+        await AsyncStorage.setItem('expenses', JSON.stringify(expenses))
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    setExpensesStorage()
+  }, [expenses])
+
   const handleNewBudget = (budget: string) => {
     if (Number(budget) >= 0) {
       setIsValidBudget(true)
@@ -107,6 +137,29 @@ export default function App() {
     )
   }
 
+  const restartApp = () => {
+    Alert.alert(
+      'Do you want to restart the app?',
+      'This will delete the current budget and its expenses',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Confirm', onPress: async () => {
+            try {
+              await AsyncStorage.clear()
+
+              setIsValidBudget(false)
+              setBudget('')
+              setExpenses([])
+            } catch (error) {
+              console.log(error)
+            }
+          }
+        }
+      ]
+    )
+  }
+
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -117,6 +170,7 @@ export default function App() {
             <ControlBudget
               budget={budget}
               expenses={expenses}
+              restartApp={restartApp}
             />
           ) : (
             <NewBudget

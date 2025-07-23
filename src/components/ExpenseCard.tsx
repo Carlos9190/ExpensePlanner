@@ -22,7 +22,7 @@ const icons: Record<Expense['category'], ImageSourcePropType> = {
 
 export default function ExpenseCard({ expense, setModal, setExpense }: ExpenseCardProps) {
 
-    const { id, name, quantity, category, date } = expense
+    const { name, quantity, category, date } = expense
     const handleActions = () => {
         setModal(true)
         setExpense(expense)
