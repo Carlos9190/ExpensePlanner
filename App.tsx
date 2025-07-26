@@ -122,7 +122,7 @@ export default function App() {
   const handleDeleteExpense = (id: Expense['id']) => {
     Alert.alert(
       'Are you sure you want to delete this expense?',
-      'This action is irreversible and the patient will be permanently removed.',
+      'This action is irreversible and the expense will be permanently removed.',
       [
         { text: 'Cancel', style: 'cancel' },
         {
